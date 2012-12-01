@@ -6,9 +6,6 @@ class CoinRack
 
   def call(env)
     begin
-      Coin.write :nate, "Nathan Hopkins"
-      Coin.write :other, true
-
       request = Rack::Request.new(env)
       return favicon if request.path == "/favicon.ico"
 
@@ -30,7 +27,7 @@ class CoinRack
 
   def get(key, format)
     result = {}
-    result[key] = Coin.read(key.to_sym)
+    result[key] = Coin.read(key)
     send format, result
   end
 
