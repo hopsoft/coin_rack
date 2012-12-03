@@ -9,80 +9,91 @@ Bundler.require :default, :development
 class CoinRackTest < MicroTest::Test
 
   before do
-    @path = File.join(File.dirname(__FILE__), "..", "config.ru")
-    @pid = spawn({}, "rackup #{@path}")
+    # @path = File.join(File.dirname(__FILE__), "..", "config.ru")
+    # @pid = spawn({}, "rackup #{@path}")
 
     # wait for the server to come up
-    t = nil
-    begin
-      t = Net::Telnet.new "Host" => "localhost", "Port" => 9292
-    rescue Exception => ex
-    end
-    while t.nil?
-      begin
-        t = Net::Telnet.new "Host" => "localhost", "Port" => 9292
-      rescue Exception => ex
-      end
-    end
+    # t = nil
+    # begin
+    #   t = Net::Telnet.new "Host" => "localhost", "Port" => 9292
+    # rescue Exception => ex
+    # end
+    # while t.nil?
+    #   begin
+    #     t = Net::Telnet.new "Host" => "localhost", "Port" => 9292
+    #   rescue Exception => ex
+    #   end
+    # end
 
     @uri = URI.parse("http://localhost:9292")
   end
 
   after do
     Coin.stop_server
-    Process.kill(9, @pid)
+    # Process.kill(9, @pid)
   end
 
-  test "GET simple JSON data" do
-    Coin.write "foo", :bar
-    http = Net::HTTP.new(@uri.host, @uri.port)
-    request = Net::HTTP::Get.new("/foo.json")
-    response = http.request(request)
-    data = JSON.parse(response.body)
-    assert response.header["Content-Type"] == "text/json"
-    assert response.body == "{\"foo\":\"bar\"}"
-    assert data["foo"] == "bar"
-  end
+  # test "GET simple JSON data" do
+  #   Coin.write "foo", :bar
+  #   http = Net::HTTP.new(@uri.host, @uri.port)
+  #   request = Net::HTTP::Get.new("/foo.json")
+  #   response = http.request(request)
+  #   data = JSON.parse(response.body)
+  #   assert response.header["Content-Type"] == "text/json"
+  #   assert response.body == "{\"foo\":\"bar\"}"
+  #   assert data["foo"] == "bar"
+  # end
 
-  test "GET complex JSON data" do
-    Coin.write "foo", {
-      "bar" => true,
-      "nested" => {
-        "inner" => "hi"
-      }
-    }
-    http = Net::HTTP.new(@uri.host, @uri.port)
-    request = Net::HTTP::Get.new("/foo.json")
-    response = http.request(request)
-    assert response.header["Content-Type"] == "text/json"
-    assert response.body == "{\"foo\":{\"bar\":true,\"nested\":{\"inner\":\"hi\"}}}"
-  end
+  # test "GET complex JSON data" do
+  #   Coin.write "foo", {
+  #     "bar" => true,
+  #     "nested" => {
+  #       "inner" => "hi"
+  #     }
+  #   }
+  #   http = Net::HTTP.new(@uri.host, @uri.port)
+  #   request = Net::HTTP::Get.new("/foo.json")
+  #   response = http.request(request)
+  #   assert response.header["Content-Type"] == "text/json"
+  #   assert response.body == "{\"foo\":{\"bar\":true,\"nested\":{\"inner\":\"hi\"}}}"
+  # end
 
-  test "GET simple XML data" do
-    Coin.write "foo", :bar
-    http = Net::HTTP.new(@uri.host, @uri.port)
-    request = Net::HTTP::Get.new("/foo.xml")
-    response = http.request(request)
-    doc = REXML::Document.new(response.body)
-    assert response.header["Content-Type"] == "text/xml"
-    assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <foo type=\"symbol\">bar</foo>\n</hash>\n"
-    assert doc.elements.first.name == "hash"
-    assert doc.elements.first.elements.first.name == "foo"
-    assert doc.elements.first.elements.first.text == "bar"
-  end
+  # test "GET simple XML data" do
+  #   Coin.write "foo", :bar
+  #   http = Net::HTTP.new(@uri.host, @uri.port)
+  #   request = Net::HTTP::Get.new("/foo.xml")
+  #   response = http.request(request)
+  #   doc = REXML::Document.new(response.body)
+  #   assert response.header["Content-Type"] == "text/xml"
+  #   assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <foo type=\"symbol\">bar</foo>\n</hash>\n"
+  #   assert doc.elements.first.name == "hash"
+  #   assert doc.elements.first.elements.first.name == "foo"
+  #   assert doc.elements.first.elements.first.text == "bar"
+  # end
 
-  test "GET complex XML data" do
-    Coin.write "foo", {
-      "bar" => true,
-      "nested" => {
-        "inner" => "hi"
-      }
-    }
+  # test "GET complex XML data" do
+  #   Coin.write "foo", {
+  #     "bar" => true,
+  #     "nested" => {
+  #       "inner" => "hi"
+  #     }
+  #   }
+  #   http = Net::HTTP.new(@uri.host, @uri.port)
+  #   request = Net::HTTP::Get.new("/foo.xml")
+  #   response = http.request(request)
+  #   assert response.header["Content-Type"] == "text/xml"
+  #   assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <foo>\n    <bar type=\"boolean\">true</bar>\n    <nested>\n      <inner>hi</inner>\n    </nested>\n  </foo>\n</hash>\n"
+  # end
+
+  test "POST returning JSON" do
+    data = { "example" => [1,2,3], "nested_example" => { "inner1" => [4,5,6], :inner2 => { "inner3" => "3 levels deep" } } }
     http = Net::HTTP.new(@uri.host, @uri.port)
-    request = Net::HTTP::Get.new("/foo.xml")
+    request = Net::HTTP::Post.new("/foo.json")
+    request.body = data.to_param
     response = http.request(request)
-    assert response.header["Content-Type"] == "text/xml"
-    assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <foo>\n    <bar type=\"boolean\">true</bar>\n    <nested>\n      <inner>hi</inner>\n    </nested>\n  </foo>\n</hash>\n"
+    assert response.body == "{\"example\":[1,2,3],\"nested_example\":{\"inner1\":[4,5,6],\"inner2\":{\"inner3\":\"3 levels deep\"}}}"
+    assert Coin.read("example") == [1,2,3]
+    assert Coin.read("nested_example") == { "inner1" => [4,5,6], "inner2" => { "inner3" => "3 levels deep"}}
   end
 
 # # Basic REST.

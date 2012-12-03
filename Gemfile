@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 gem "coin"
+gem "footing", ">=0.1.5"
 gem "rack"
 gem "rack-abstract-format", :require => "rack/abstract_format"
 gem "rack-accept-media-types", :require => "rack/accept_media_types"

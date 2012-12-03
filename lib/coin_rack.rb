@@ -1,21 +1,22 @@
 require "bundler"
-Bundler.require
+Bundler.require :default, :development
 require File.join(File.dirname(__FILE__), "coin_rack", "version")
+
+Footing.patch! String, Footing::String
+Footing.patch! Array, Footing::Array
+Footing.patch! Hash, Footing::Hash
 
 class CoinRack
 
   def call(env)
     begin
       request = Rack::Request.new(env)
+      request.params.cast_values!
       return favicon if request.path == "/favicon.ico"
-
-      key = request.path.gsub(/\A\//, "")
-      format = format(request)
-
-      return get(key, format) if request.get?
-      return post(key, format) if request.post?
-      return put(key, format) if request.put?
-      return delete(key, format) if request.delete?
+      return get(request) if request.get?
+      return post(request) if request.post?
+      return put(request) if request.put?
+      return delete(request) if request.delete?
     rescue Exception => ex
       [500, {"Content-Type" => "text/html"}, ["ERROR! #{ex}"]]
     end
@@ -25,19 +26,44 @@ class CoinRack
 
   protected
 
-  def get(key, format)
+  def key(request)
+    request.path.gsub(/\A\//, "")
+  end
+
+  def format(request)
+    case request.accept_media_types.prefered
+    when "application/json" then :json
+    when "application/xml" then :xml
+    else :unknown
+    end
+  end
+
+  # CREATE
+  def post(request)
+    put(request)
+  end
+
+  # READ
+  def get(request)
+    k = key(request)
+    f = format(request)
     result = {}
-    result[key] = Coin.read(key)
-    send format, result
+    result[k] = Coin.read(k)
+    send f, result
   end
 
-  def post(key, format)
+  # UPDATE
+  def put(request)
+    k = key(request)
+    f = format(request)
+    request.params.each do |key, value|
+      Coin.write key, value
+    end
+    send f, request.params
   end
 
-  def put(key, format)
-  end
-
-  def delete(key, format)
+  # DELETE
+  def delete(request)
   end
 
   def json(result)
@@ -50,14 +76,6 @@ class CoinRack
 
   def unknown
     [400, {"Content-Type" => "text/html"}, ["UNKNOWN FORMAT"]]
-  end
-
-  def format(request)
-    case request.accept_media_types.prefered
-    when "application/json" then :json
-    when "application/xml" then :xml
-    else :unknown
-    end
   end
 
   def favicon
