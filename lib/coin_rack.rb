@@ -1,5 +1,5 @@
 require "bundler"
-Bundler.require :default, :development
+Bundler.require
 require File.join(File.dirname(__FILE__), "coin_rack", "version")
 
 Footing.patch! String, Footing::String

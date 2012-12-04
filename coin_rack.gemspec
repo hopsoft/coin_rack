@@ -13,14 +13,15 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/hopsoft/coin_rack"
 
   spec.files = FileList[
-    'lib/**/*.rb',
-    'bin/*',
-    'test/**/*.rb',
-    'LICENSE.txt',
-    'README.md'
+    "lib/**/*.rb",
+    "bin/*",
+    "test/**/*.rb",
+    "config.ru",
+    "Gemfile",
+    "Gemfile.lock",
+    "LICENSE.txt",
+    "README.md"
   ].to_a
 
-  spec.executables   = []
-  spec.test_files    = spec.files.grep(%r{^(test)/})
-  spec.require_paths = ["lib"]
+  spec.executables   = ["coin_rack"]
 end
