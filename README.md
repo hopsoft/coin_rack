@@ -17,6 +17,8 @@ Terminal 2
 ```bash
 $ curl --data "value=true" http://localhost:9292/example.json
 $ curl http://localhost:9292/example.json
+$ curl -X DELETE http://localhost:9292/example.json
+$ curl http://localhost:9292/example.json
 ```
 
 ## URL Definition
