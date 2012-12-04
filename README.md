@@ -5,14 +5,14 @@ REST interface to [Coin's API](https://github.com/hopsoft/coin).
 
 ## Quick Start
 
-Terminal 1
+### Run the server
 
 ```bash
 $ gem install coin_rack
 $ coin_rack --run
 ```
 
-Terminal 2
+### Make some client requests
 
 ```bash
 $ curl --data "value=true" http://localhost:9292/example.json # => {"example":true}
