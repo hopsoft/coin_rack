@@ -15,10 +15,10 @@ $ coin_rack --run
 Terminal 2
 
 ```bash
-$ curl --data "value=true" http://localhost:9292/example.json
-$ curl http://localhost:9292/example.json
-$ curl -X DELETE http://localhost:9292/example.json
-$ curl http://localhost:9292/example.json
+$ curl --data "value=true" http://localhost:9292/example.json # => {"example":true}
+$ curl http://localhost:9292/example.json # => {"example":true}
+$ curl -X DELETE http://localhost:9292/example.json # => {"example":null}
+$ curl http://localhost:9292/example.json # => {"example":null}
 ```
 
 ## URL Definition
