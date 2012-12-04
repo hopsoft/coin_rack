@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby --
+require "optparse"
+
+# setup the options -----------------------------------------------------------
+options = {}
+parser = OptionParser.new do |opts|
+  opts.banner = "CoinRack Usage: coin_rack [options]"
+
+  desc = "Prints the location of the rackup file."
+  opts.on("-p", "--print", desc) { |value| options[:print] = value }
+
+  desc = "Starts the Rack server."
+  opts.on("-r", "--run", desc) { |value| options[:run] = value }
+
+  opts.on_tail("-h", "--help", "Show this message.") do
+    puts opts
+    exit
+  end
+end
+parser.parse!
+
+if options[:print].nil? && options[:run].nil?
+  puts parser.banner
+  puts parser.summarize
+  exit
+end
+
+rackup_file = File.expand_path(File.join(File.dirname(__FILE__), "..", "config.ru"))
+
+if options[:print]
+  puts rackup_file
+  exit
+end
+
+if options[:run]
+
+end
