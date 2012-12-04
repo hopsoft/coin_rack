@@ -18,7 +18,7 @@ class CoinRack
       return put(request) if request.put?
       return delete(request) if request.delete?
     rescue Exception => ex
-      [500, {"Content-Type" => "text/html"}, ["ERROR! #{ex}"]]
+      [500, {"Content-Type" => "text/html"}, ["ERROR: #{ex}"]]
     end
 
     [400, {"Content-Type" => "text/html"}, ["BAD REQUEST"]]
