@@ -96,11 +96,13 @@ class CoinRackTest < MicroTest::Test
 
   test "POST returning JSON" do
     example = {
-      "value1" => true,
-      "value2" => [1, 2, 3],
-      "nested" => {
-        "value1" => false,
-        "value2" => [4, 5, 6]
+      "value" => {
+        "value1" => true,
+        "value2" => [1, 2, 3],
+        "nested" => {
+          "value1" => false,
+          "value2" => [4, 5, 6]
+        }
       }
     }
     http = Net::HTTP.new(@uri.host, @uri.port)
@@ -112,17 +114,19 @@ class CoinRackTest < MicroTest::Test
     assert response.body == "{\"example\":{\"nested\":{\"value1\":false,\"value2\":[4,5,6]},\"value1\":true,\"value2\":[1,2,3]}}"
     assert JSON.parse(response.body)
     cached = Coin.read("example")
-    assert (cached.keys - example.keys).empty?
-    assert (cached.values - example.values).empty?
+    assert (cached.keys - example["value"].keys).empty?
+    assert (cached.values - example["value"].values).empty?
   end
 
   test "POST returning XML" do
     example = {
-      "value1" => true,
-      "value2" => [1, 2, 3],
-      "nested" => {
-        "value1" => false,
-        "value2" => [4, 5, 6]
+      "value" => {
+        "value1" => true,
+        "value2" => [1, 2, 3],
+        "nested" => {
+          "value1" => false,
+          "value2" => [4, 5, 6]
+        }
       }
     }
     http = Net::HTTP.new(@uri.host, @uri.port)
@@ -134,17 +138,19 @@ class CoinRackTest < MicroTest::Test
     assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <example>\n    <nested>\n      <value1 type=\"boolean\">false</value1>\n      <value2 type=\"array\">\n        <value2 type=\"integer\">4</value2>\n        <value2 type=\"integer\">5</value2>\n        <value2 type=\"integer\">6</value2>\n      </value2>\n    </nested>\n    <value1 type=\"boolean\">true</value1>\n    <value2 type=\"array\">\n      <value2 type=\"integer\">1</value2>\n      <value2 type=\"integer\">2</value2>\n      <value2 type=\"integer\">3</value2>\n    </value2>\n  </example>\n</hash>\n"
     assert REXML::Document.new(response.body)
     cached = Coin.read("example")
-    assert (cached.keys - example.keys).empty?
-    assert (cached.values - example.values).empty?
+    assert (cached.keys - example["value"].keys).empty?
+    assert (cached.values - example["value"].values).empty?
   end
 
   test "PUT returning JSON" do
     example = {
-      "value1" => true,
-      "value2" => [1, 2, 3],
-      "nested" => {
-        "value1" => false,
-        "value2" => [4, 5, 6]
+      "value" => {
+        "value1" => true,
+        "value2" => [1, 2, 3],
+        "nested" => {
+          "value1" => false,
+          "value2" => [4, 5, 6]
+        }
       }
     }
     http = Net::HTTP.new(@uri.host, @uri.port)
@@ -156,17 +162,19 @@ class CoinRackTest < MicroTest::Test
     assert response.body == "{\"example\":{\"nested\":{\"value1\":false,\"value2\":[4,5,6]},\"value1\":true,\"value2\":[1,2,3]}}"
     assert JSON.parse(response.body)
     cached = Coin.read("example")
-    assert (cached.keys - example.keys).empty?
-    assert (cached.values - example.values).empty?
+    assert (cached.keys - example["value"].keys).empty?
+    assert (cached.values - example["value"].values).empty?
   end
 
   test "PUT returning XML" do
     example = {
-      "value1" => true,
-      "value2" => [1, 2, 3],
-      "nested" => {
-        "value1" => false,
-        "value2" => [4, 5, 6]
+      "value" => {
+        "value1" => true,
+        "value2" => [1, 2, 3],
+        "nested" => {
+          "value1" => false,
+          "value2" => [4, 5, 6]
+        }
       }
     }
     http = Net::HTTP.new(@uri.host, @uri.port)
@@ -178,8 +186,8 @@ class CoinRackTest < MicroTest::Test
     assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <example>\n    <nested>\n      <value1 type=\"boolean\">false</value1>\n      <value2 type=\"array\">\n        <value2 type=\"integer\">4</value2>\n        <value2 type=\"integer\">5</value2>\n        <value2 type=\"integer\">6</value2>\n      </value2>\n    </nested>\n    <value1 type=\"boolean\">true</value1>\n    <value2 type=\"array\">\n      <value2 type=\"integer\">1</value2>\n      <value2 type=\"integer\">2</value2>\n      <value2 type=\"integer\">3</value2>\n    </value2>\n  </example>\n</hash>\n"
     assert REXML::Document.new(response.body)
     cached = Coin.read("example")
-    assert (cached.keys - example.keys).empty?
-    assert (cached.values - example.values).empty?
+    assert (cached.keys - example["value"].keys).empty?
+    assert (cached.values - example["value"].values).empty?
   end
 
   test "DELETE returning JSON" do

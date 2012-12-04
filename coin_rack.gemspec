@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "footing"
   spec.add_dependency "rack-abstract-format"
   spec.add_dependency "rack-accept-media-types"
+  spec.add_dependency "builder"
   spec.add_dependency "activesupport"
 
   spec.files = FileList[

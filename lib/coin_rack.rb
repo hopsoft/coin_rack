@@ -56,16 +56,7 @@ class CoinRack
   def put(request)
     k = key(request)
     f = format(request)
-
-    if request.POST.length > 1
-      value = request.POST.reduce({}) do |memo, pair|
-        memo[pair.first] = pair.last
-        memo
-      end
-    else
-      value = request.POST.first
-    end
-
+    value = request.POST["value"]
     Coin.write k, value
     result = {}
     result[k] = value

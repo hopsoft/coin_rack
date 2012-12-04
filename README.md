@@ -15,7 +15,7 @@ $ coin_rack --run
 Terminal 2
 
 ```bash
-$ curl --data "example=value" http://localhost:9292/example.json
+$ curl --data "value=true" http://localhost:9292/example.json
 $ curl http://localhost:9292/example.json
 ```
 
@@ -48,13 +48,13 @@ http://localhost:9292/example.json
 #### Request Body
 
 ```
-example=value
+value=true
 ```
 
 #### Response
 
 ```
-"{\"example\":\"value\"}"
+"{\"example\":\"true\"}"
 ```
 
 ## GET
@@ -70,7 +70,7 @@ http://localhost:9292/example.json
 #### Response
 
 ```
-"{\"example\":\"value\"}"
+"{\"example\":\"true\"}"
 ```
 
 ## DELETE
