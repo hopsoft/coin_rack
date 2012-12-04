@@ -19,13 +19,14 @@ parser = OptionParser.new do |opts|
 end
 parser.parse!
 
-if options[:print].nil? && options[:run].nil?
+if options.values.compact.empty?
   puts parser.banner
   puts parser.summarize
   exit
 end
 
-rackup_file = File.expand_path(File.join(File.dirname(__FILE__), "..", "config.ru"))
+path = File.expand_path(File.join(File.dirname(__FILE__), ".."))
+rackup_file = File.join(path, "config.ru")
 
 if options[:print]
   puts rackup_file
@@ -33,5 +34,6 @@ if options[:print]
 end
 
 if options[:run]
-
+  exec "cd #{path} && rackup"
+  exit
 end

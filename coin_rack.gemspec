@@ -12,6 +12,13 @@ Gem::Specification.new do |spec|
   spec.summary       = "A Simple Rack application that provides a REST interface for Coin."
   spec.homepage      = "https://github.com/hopsoft/coin_rack"
 
+  spec.add_dependency "rack"
+  spec.add_dependency "coin"
+  spec.add_dependency "footing"
+  spec.add_dependency "rack-abstract-format"
+  spec.add_dependency "rack-accept-media-types"
+  spec.add_dependency "activesupport"
+
   spec.files = FileList[
     "lib/**/*.rb",
     "bin/*",
