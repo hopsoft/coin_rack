@@ -15,10 +15,44 @@ $ coin_rack --run
 ### Make some client requests
 
 ```bash
-$ curl --data "value=true" http://localhost:9292/example.json # => {"example":true}
-$ curl http://localhost:9292/example.json # => {"example":true}
-$ curl -X DELETE http://localhost:9292/example.json # => {"example":null}
-$ curl http://localhost:9292/example.json # => {"example":null}
+$ curl --data "value=true" http://localhost:9292/example.json
+# => {"example":true}
+
+$ curl http://localhost:9292/example.json
+# => {"example":true}
+
+$ curl -X DELETE http://localhost:9292/example.json
+# => {"example":null}
+
+$ curl http://localhost:9292/example.json
+# => {"example":null}
+```
+
+#### Prefer XML?
+```bash
+$ curl --data "value=true" http://localhost:9292/example.xml
+# <?xml version="1.0" encoding="UTF-8"?>
+# <hash>
+#   <example type="boolean">true</example>
+# </hash>
+
+$ curl http://localhost:9292/example.xml
+# <?xml version="1.0" encoding="UTF-8"?>
+# <hash>
+#   <example type="boolean">true</example>
+# </hash>
+
+$ curl -X DELETE http://localhost:9292/example.xml
+# <?xml version="1.0" encoding="UTF-8"?>
+# <hash>
+#   <example nil="true"/>
+# </hash>
+
+$ curl http://localhost:9292/example.xml
+# <?xml version="1.0" encoding="UTF-8"?>
+# <hash>
+#   <example nil="true"/>
+# </hash>
 ```
 
 ## URL Definition
