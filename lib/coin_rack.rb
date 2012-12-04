@@ -11,7 +11,7 @@ class CoinRack
   def call(env)
     begin
       request = Rack::Request.new(env)
-      request.params.cast_values!
+      request.POST.cast_values!
       return favicon if request.path == "/favicon.ico"
       return get(request) if request.get?
       return post(request) if request.post?
@@ -56,14 +56,30 @@ class CoinRack
   def put(request)
     k = key(request)
     f = format(request)
-    request.params.each do |key, value|
-      Coin.write key, value
+
+    if request.POST.length > 1
+      value = request.POST.reduce({}) do |memo, pair|
+        memo[pair.first] = pair.last
+        memo
+      end
+    else
+      value = request.POST.first
     end
-    send f, request.params
+
+    Coin.write k, value
+    result = {}
+    result[k] = value
+    send f, result
   end
 
   # DELETE
   def delete(request)
+    k = key(request)
+    f = format(request)
+    Coin.delete k
+    result = {}
+    result[k] = nil
+    send f, result
   end
 
   def json(result)

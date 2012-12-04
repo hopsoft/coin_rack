@@ -78,5 +78,5 @@ http://localhost:9292/example.json
 #### Response
 
 ```
-"{\"example\":\"value\"}"
+"{\"example\":null}"
 ```

@@ -9,113 +9,203 @@ Bundler.require :default, :development
 class CoinRackTest < MicroTest::Test
 
   before do
-    # @path = File.join(File.dirname(__FILE__), "..", "config.ru")
-    # @pid = spawn({}, "rackup #{@path}")
+    @path = File.join(File.dirname(__FILE__), "..", "config.ru")
+    @pid = spawn({}, "rackup #{@path}")
 
     # wait for the server to come up
-    # t = nil
-    # begin
-    #   t = Net::Telnet.new "Host" => "localhost", "Port" => 9292
-    # rescue Exception => ex
-    # end
-    # while t.nil?
-    #   begin
-    #     t = Net::Telnet.new "Host" => "localhost", "Port" => 9292
-    #   rescue Exception => ex
-    #   end
-    # end
+    sleep 0.1
+    t = nil
+    begin
+      t = Net::Telnet.new "Host" => "localhost", "Port" => 9292
+    rescue Exception => ex
+    end
+    while t.nil?
+      begin
+        t = Net::Telnet.new "Host" => "localhost", "Port" => 9292
+      rescue Exception => ex
+        sleep 0.1
+      end
+    end
 
     @uri = URI.parse("http://localhost:9292")
   end
 
   after do
     Coin.stop_server
-    # Process.kill(9, @pid)
+    Process.kill(9, @pid)
   end
 
-  # test "GET simple JSON data" do
-  #   Coin.write "foo", :bar
-  #   http = Net::HTTP.new(@uri.host, @uri.port)
-  #   request = Net::HTTP::Get.new("/foo.json")
-  #   response = http.request(request)
-  #   data = JSON.parse(response.body)
-  #   assert response.header["Content-Type"] == "text/json"
-  #   assert response.body == "{\"foo\":\"bar\"}"
-  #   assert data["foo"] == "bar"
-  # end
+  test "GET JSON data" do
+    Coin.write "example", "value"
+    http = Net::HTTP.new(@uri.host, @uri.port)
+    request = Net::HTTP::Get.new("/example.json")
+    response = http.request(request)
+    data = JSON.parse(response.body)
+    assert response.header["Content-Type"] == "text/json"
+    assert response.code == "200"
+    assert response.body == "{\"example\":\"value\"}"
+    assert data["example"] == "value"
+  end
 
-  # test "GET complex JSON data" do
-  #   Coin.write "foo", {
-  #     "bar" => true,
-  #     "nested" => {
-  #       "inner" => "hi"
-  #     }
-  #   }
-  #   http = Net::HTTP.new(@uri.host, @uri.port)
-  #   request = Net::HTTP::Get.new("/foo.json")
-  #   response = http.request(request)
-  #   assert response.header["Content-Type"] == "text/json"
-  #   assert response.body == "{\"foo\":{\"bar\":true,\"nested\":{\"inner\":\"hi\"}}}"
-  # end
+  test "GET complex JSON data" do
+    Coin.write "example", {
+      "value1" => true,
+      "value2" => [1, 2, 3],
+      "nested" => {
+        "value1" => false,
+        "value2" => [4, 5, 6]
+      }
+    }
+    http = Net::HTTP.new(@uri.host, @uri.port)
+    request = Net::HTTP::Get.new("/example.json")
+    response = http.request(request)
+    assert response.header["Content-Type"] == "text/json"
+    assert response.code == "200"
+    assert response.body == "{\"example\":{\"value1\":true,\"value2\":[1,2,3],\"nested\":{\"value1\":false,\"value2\":[4,5,6]}}}"
+    assert JSON.parse(response.body)
+  end
 
-  # test "GET simple XML data" do
-  #   Coin.write "foo", :bar
-  #   http = Net::HTTP.new(@uri.host, @uri.port)
-  #   request = Net::HTTP::Get.new("/foo.xml")
-  #   response = http.request(request)
-  #   doc = REXML::Document.new(response.body)
-  #   assert response.header["Content-Type"] == "text/xml"
-  #   assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <foo type=\"symbol\">bar</foo>\n</hash>\n"
-  #   assert doc.elements.first.name == "hash"
-  #   assert doc.elements.first.elements.first.name == "foo"
-  #   assert doc.elements.first.elements.first.text == "bar"
-  # end
+  test "GET XML data" do
+    Coin.write "example", "value"
+    http = Net::HTTP.new(@uri.host, @uri.port)
+    request = Net::HTTP::Get.new("/example.xml")
+    response = http.request(request)
+    assert response.header["Content-Type"] == "text/xml"
+    assert response.code == "200"
+    assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <example>value</example>\n</hash>\n"
+    assert REXML::Document.new(response.body)
+  end
 
-  # test "GET complex XML data" do
-  #   Coin.write "foo", {
-  #     "bar" => true,
-  #     "nested" => {
-  #       "inner" => "hi"
-  #     }
-  #   }
-  #   http = Net::HTTP.new(@uri.host, @uri.port)
-  #   request = Net::HTTP::Get.new("/foo.xml")
-  #   response = http.request(request)
-  #   assert response.header["Content-Type"] == "text/xml"
-  #   assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <foo>\n    <bar type=\"boolean\">true</bar>\n    <nested>\n      <inner>hi</inner>\n    </nested>\n  </foo>\n</hash>\n"
-  # end
+  test "GET complex XML data" do
+    Coin.write "example", {
+      "value1" => true,
+      "value2" => [1, 2, 3],
+      "nested" => {
+        "value1" => false,
+        "value2" => [4, 5, 6]
+      }
+    }
+    http = Net::HTTP.new(@uri.host, @uri.port)
+    request = Net::HTTP::Get.new("/example.xml")
+    response = http.request(request)
+    assert response.header["Content-Type"] == "text/xml"
+    assert response.code == "200"
+    assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <example>\n    <value1 type=\"boolean\">true</value1>\n    <value2 type=\"array\">\n      <value2 type=\"integer\">1</value2>\n      <value2 type=\"integer\">2</value2>\n      <value2 type=\"integer\">3</value2>\n    </value2>\n    <nested>\n      <value1 type=\"boolean\">false</value1>\n      <value2 type=\"array\">\n        <value2 type=\"integer\">4</value2>\n        <value2 type=\"integer\">5</value2>\n        <value2 type=\"integer\">6</value2>\n      </value2>\n    </nested>\n  </example>\n</hash>\n"
+    assert REXML::Document.new(response.body)
+  end
 
   test "POST returning JSON" do
-    data = { "example" => [1,2,3], "nested_example" => { "inner1" => [4,5,6], :inner2 => { "inner3" => "3 levels deep" } } }
+    example = {
+      "value1" => true,
+      "value2" => [1, 2, 3],
+      "nested" => {
+        "value1" => false,
+        "value2" => [4, 5, 6]
+      }
+    }
     http = Net::HTTP.new(@uri.host, @uri.port)
-    request = Net::HTTP::Post.new("/foo.json")
-    request.body = data.to_param
+    request = Net::HTTP::Post.new("/example.json")
+    request.body = example.to_param
     response = http.request(request)
-    assert response.body == "{\"example\":[1,2,3],\"nested_example\":{\"inner1\":[4,5,6],\"inner2\":{\"inner3\":\"3 levels deep\"}}}"
-    assert Coin.read("example") == [1,2,3]
-    assert Coin.read("nested_example") == { "inner1" => [4,5,6], "inner2" => { "inner3" => "3 levels deep"}}
+    assert response.header["Content-Type"] == "text/json"
+    assert response.code == "200"
+    assert response.body == "{\"example\":{\"nested\":{\"value1\":false,\"value2\":[4,5,6]},\"value1\":true,\"value2\":[1,2,3]}}"
+    assert JSON.parse(response.body)
+    cached = Coin.read("example")
+    assert (cached.keys - example.keys).empty?
+    assert (cached.values - example.values).empty?
   end
 
-# # Basic REST.
-# # Most REST APIs will set semantic values in response.body and response.code.
-# require "net/http"
+  test "POST returning XML" do
+    example = {
+      "value1" => true,
+      "value2" => [1, 2, 3],
+      "nested" => {
+        "value1" => false,
+        "value2" => [4, 5, 6]
+      }
+    }
+    http = Net::HTTP.new(@uri.host, @uri.port)
+    request = Net::HTTP::Post.new("/example.xml")
+    request.body = example.to_param
+    response = http.request(request)
+    assert response.header["Content-Type"] == "text/xml"
+    assert response.code == "200"
+    assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <example>\n    <nested>\n      <value1 type=\"boolean\">false</value1>\n      <value2 type=\"array\">\n        <value2 type=\"integer\">4</value2>\n        <value2 type=\"integer\">5</value2>\n        <value2 type=\"integer\">6</value2>\n      </value2>\n    </nested>\n    <value1 type=\"boolean\">true</value1>\n    <value2 type=\"array\">\n      <value2 type=\"integer\">1</value2>\n      <value2 type=\"integer\">2</value2>\n      <value2 type=\"integer\">3</value2>\n    </value2>\n  </example>\n</hash>\n"
+    assert REXML::Document.new(response.body)
+    cached = Coin.read("example")
+    assert (cached.keys - example.keys).empty?
+    assert (cached.values - example.values).empty?
+  end
 
-# http = Net::HTTP.new("api.restsite.com")
+  test "PUT returning JSON" do
+    example = {
+      "value1" => true,
+      "value2" => [1, 2, 3],
+      "nested" => {
+        "value1" => false,
+        "value2" => [4, 5, 6]
+      }
+    }
+    http = Net::HTTP.new(@uri.host, @uri.port)
+    request = Net::HTTP::Put.new("/example.json")
+    request.body = example.to_param
+    response = http.request(request)
+    assert response.header["Content-Type"] == "text/json"
+    assert response.code == "200"
+    assert response.body == "{\"example\":{\"nested\":{\"value1\":false,\"value2\":[4,5,6]},\"value1\":true,\"value2\":[1,2,3]}}"
+    assert JSON.parse(response.body)
+    cached = Coin.read("example")
+    assert (cached.keys - example.keys).empty?
+    assert (cached.values - example.values).empty?
+  end
 
-# request = Net::HTTP::Post.new("/users")
-# request.set_form_data({"users[login]" => "quentin"})
-# response = http.request(request)
-# # Use nokogiri, hpricot, etc to parse response.body.
+  test "PUT returning XML" do
+    example = {
+      "value1" => true,
+      "value2" => [1, 2, 3],
+      "nested" => {
+        "value1" => false,
+        "value2" => [4, 5, 6]
+      }
+    }
+    http = Net::HTTP.new(@uri.host, @uri.port)
+    request = Net::HTTP::Put.new("/example.xml")
+    request.body = example.to_param
+    response = http.request(request)
+    assert response.header["Content-Type"] == "text/xml"
+    assert response.code == "200"
+    assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <example>\n    <nested>\n      <value1 type=\"boolean\">false</value1>\n      <value2 type=\"array\">\n        <value2 type=\"integer\">4</value2>\n        <value2 type=\"integer\">5</value2>\n        <value2 type=\"integer\">6</value2>\n      </value2>\n    </nested>\n    <value1 type=\"boolean\">true</value1>\n    <value2 type=\"array\">\n      <value2 type=\"integer\">1</value2>\n      <value2 type=\"integer\">2</value2>\n      <value2 type=\"integer\">3</value2>\n    </value2>\n  </example>\n</hash>\n"
+    assert REXML::Document.new(response.body)
+    cached = Coin.read("example")
+    assert (cached.keys - example.keys).empty?
+    assert (cached.values - example.values).empty?
+  end
 
-# request = Net::HTTP::Get.new("/users/1")
-# response = http.request(request)
-# # As with POST, the data is in response.body.
+  test "DELETE returning JSON" do
+    Coin.write "example", "value"
+    assert Coin.read("example") == "value"
+    http = Net::HTTP.new(@uri.host, @uri.port)
+    request = Net::HTTP::Delete.new("/example.json")
+    response = http.request(request)
+    data = JSON.parse(response.body)
+    assert response.header["Content-Type"] == "text/json"
+    assert response.code == "200"
+    assert response.body == "{\"example\":null}"
+    assert Coin.read("example").nil?
+  end
 
-# request = Net::HTTP::Put.new("/users/1")
-# request.set_form_data({"users[login]" => "changed"})
-# response = http.request(request)
-
-# request = Net::HTTP::Delete.new("/users/1")
-# response = http.request(request)
+  test "DELETE returning XML" do
+    Coin.write "example", "value"
+    assert Coin.read("example") == "value"
+    http = Net::HTTP.new(@uri.host, @uri.port)
+    request = Net::HTTP::Delete.new("/example.xml")
+    response = http.request(request)
+    assert response.header["Content-Type"] == "text/xml"
+    assert response.code == "200"
+    assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <example nil=\"true\"/>\n</hash>\n"
+    assert REXML::Document.new(response.body)
+    assert Coin.read("example").nil?
+  end
 
 end
