@@ -1,29 +1,82 @@
 # CoinRack
 
-TODO: Write a gem description
+A Simple [Rack](http://rack.github.com/) application that provides a
+REST interface to [Coin's API](https://github.com/hopsoft/coin).
 
-## Installation
+## Quick Start
 
-Add this line to your application's Gemfile:
+```bash
+$ gem install coin_rack
+$ coin_rack
+$ curl http://localhost:9292/example.json
+```
 
-    gem 'coin_rack'
+## URL Definition
 
-And then execute:
+```
+                  cache key
+                       |
+http://localhost:9292/KEY.FORMAT
+                            |
+                    response format
+```
 
-    $ bundle
+*Note: The XML format is also supported but XML examples have been omitted for brevity.*
 
-Or install it yourself as:
+## POST/PUT
 
-    $ gem install coin_rack
+Create and/or update the key to a new value.
 
-## Usage
+#### Params
 
-TODO: Write usage instructions here
+* **value** - the value to assign
 
-## Contributing
+#### Request URI
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+```
+http://localhost:9292/example.json
+```
+
+#### Request Body
+
+```
+example=value
+```
+
+#### Response
+
+```
+"{\"example\":\"value\"}"
+```
+
+## GET
+
+Get the current value for the specified key.
+
+#### Request URI
+
+```
+http://localhost:9292/example.json
+```
+
+#### Response
+
+```
+"{\"example\":\"value\"}"
+```
+
+## DELETE
+
+Deletes the key.
+
+#### Request URI
+
+```
+http://localhost:9292/example.json
+```
+
+#### Response
+
+```
+"{\"example\":\"value\"}"
+```
