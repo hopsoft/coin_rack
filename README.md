@@ -1,6 +1,6 @@
 # CoinRack
 
-A Simple [Rack](http://rack.github.com/) application that provides a
+A simple [Rack](http://rack.github.com/) application that provides a
 REST interface to [Coin's API](https://github.com/hopsoft/coin).
 
 ## Quick Start
