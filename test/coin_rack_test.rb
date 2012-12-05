@@ -199,7 +199,7 @@ class CoinRackTest < MicroTest::Test
     data = JSON.parse(response.body)
     assert response.header["Content-Type"] == "text/json"
     assert response.code == "200"
-    assert response.body == "{\"example\":null}"
+    assert response.body == "{\"example\":\"value\"}"
     assert Coin.read("example").nil?
   end
 
@@ -211,7 +211,7 @@ class CoinRackTest < MicroTest::Test
     response = http.request(request)
     assert response.header["Content-Type"] == "text/xml"
     assert response.code == "200"
-    assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <example nil=\"true\"/>\n</hash>\n"
+    assert response.body == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <example>value</example>\n</hash>\n"
     assert REXML::Document.new(response.body)
     assert Coin.read("example").nil?
   end

@@ -67,9 +67,10 @@ class CoinRack
   def delete(request)
     k = key(request)
     f = format(request)
+    value = Coin.read(k)
     Coin.delete k
     result = {}
-    result[k] = nil
+    result[k] = value
     send f, result
   end
 
