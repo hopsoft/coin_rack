@@ -3,8 +3,7 @@ require "net/telnet"
 require "uri"
 require "json"
 require "rexml/document"
-require "bundler"
-Bundler.require :default, :development
+require_relative "../lib/coin_rack"
 
 class CoinRackTest < MicroTest::Test
 

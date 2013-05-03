@@ -1,6 +1,9 @@
-require "bundler"
-Bundler.require
-require File.join(File.dirname(__FILE__), "coin_rack", "version")
+require "coin"
+require "footing"
+require "rack/abstract_format"
+require "rack/accept_media_types"
+require "active_support/all"
+require_relative "coin_rack/version"
 
 Footing.patch! String, Footing::String
 Footing.patch! Array, Footing::Array

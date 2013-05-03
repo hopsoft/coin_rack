@@ -1,5 +1,9 @@
 # CoinRack
 
+[![Build Status](https://travis-ci.org/hopsoft/coin_rack.png)](https://travis-ci.org/hopsoft/coin_rack)
+[![Dependency Status](https://gemnasium.com/hopsoft/coin_rack.png)](https://gemnasium.com/hopsoft/coin_rack)
+[![Code Climate](https://codeclimate.com/github/hopsoft/coin_rack.png)](https://codeclimate.com/github/hopsoft/coin_rack)
+
 A simple [Rack](http://rack.github.com/) application that provides a
 REST interface to [Coin's API](https://github.com/hopsoft/coin).
 

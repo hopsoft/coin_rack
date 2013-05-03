@@ -1,35 +1,28 @@
 # -*- encoding: utf-8 -*-
-require "rake"
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'coin_rack/version'
+require File.join(File.expand_path("../lib", __FILE__), "coin_rack", "version")
 
-Gem::Specification.new do |spec|
-  spec.name          = "coin_rack"
-  spec.version       = CoinRack::VERSION
-  spec.authors       = ["Nathan Hopkins"]
-  spec.email         = ["natehop@gmail.com"]
-  spec.summary       = "A Simple Rack application that provides a REST interface for Coin."
-  spec.homepage      = "https://github.com/hopsoft/coin_rack"
+Gem::Specification.new do |gem|
+  gem.name          = "coin_rack"
+  gem.version       = CoinRack::VERSION
+  gem.authors       = ["Nathan Hopkins"]
+  gem.email         = ["natehop@gmail.com"]
+  gem.summary       = "A Simple Rack application that provides a REST interface for Coin."
+  gem.homepage      = "https://github.com/hopsoft/coin_rack"
 
-  spec.add_dependency "rack"
-  spec.add_dependency "coin"
-  spec.add_dependency "footing"
-  spec.add_dependency "rack-abstract-format"
-  spec.add_dependency "rack-accept-media-types"
-  spec.add_dependency "builder"
-  spec.add_dependency "activesupport"
+  gem.add_dependency "rack"
+  gem.add_dependency "coin"
+  gem.add_dependency "footing"
+  gem.add_dependency "rack-abstract-format"
+  gem.add_dependency "rack-accept-media-types"
+  gem.add_dependency "builder"
+  gem.add_dependency "activesupport"
 
-  spec.files = FileList[
-    "lib/**/*.rb",
-    "bin/*",
-    "test/**/*.rb",
-    "config.ru",
-    "Gemfile",
-    "Gemfile.lock",
-    "LICENSE.txt",
-    "README.md"
-  ].to_a
+  gem.add_development_dependency "pry"
+  gem.add_development_dependency "pry-stack_explorer"
+  gem.add_development_dependency "micro_test"
 
-  spec.executables   = ["coin_rack"]
+  gem.files = Dir["lib/**/*.rb", "bin/*", "[A-Z].*"]
+  gem.test_files = Dir["test/**/*.rb"]
+
+  gem.executables   = ["coin_rack"]
 end
