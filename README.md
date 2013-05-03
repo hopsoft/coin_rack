@@ -130,3 +130,8 @@ Note the value returned is the value that was deleted.
 ```
 "{\"example\":true}"
 ```
+
+## Getting Serious
+
+* [Running behind robust web servers](https://github.com/hopsoft/coin_rack/wiki/Running-behind-robust-web-servers)
+
