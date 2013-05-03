@@ -17,6 +17,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "builder"
   gem.add_dependency "activesupport"
 
+  gem.add_development_dependency "rake"
   gem.add_development_dependency "pry"
   gem.add_development_dependency "pry-stack_explorer"
   gem.add_development_dependency "micro_test"
