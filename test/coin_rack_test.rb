@@ -3,12 +3,18 @@ require "net/telnet"
 require "uri"
 require "json"
 require "rexml/document"
+require "pry-test"
+require "coveralls"
+
+Coveralls.wear!
+SimpleCov.command_name "pry-test"
+
 require_relative "../lib/coin_rack"
 
-class CoinRackTest < MicroTest::Test
+class CoinRackTest < PryTest::Test
 
   before do
-    @path = File.join(File.dirname(__FILE__), "..", "config.ru")
+    @path = File.expand_path("../../config.ru", __FILE__)
     @pid = spawn({}, "rackup #{@path}")
 
     # wait for the server to come up

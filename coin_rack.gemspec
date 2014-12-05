@@ -19,8 +19,10 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency "rake"
   gem.add_development_dependency "pry"
-  gem.add_development_dependency "pry-stack_explorer"
-  gem.add_development_dependency "micro_test"
+  gem.add_development_dependency "pry-test"
+  gem.add_development_dependency "coveralls"
+  #gem.add_development_dependency "pry-stack_explorer"
+  #gem.add_development_dependency "pry-rescue"
 
   gem.files = Dir["lib/**/*.rb", "bin/*", "[A-Z].*", "config.ru"]
   gem.test_files = Dir["test/**/*.rb"]
